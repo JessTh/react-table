@@ -1,0 +1,90 @@
+
+html, body {
+	height: 100%;
+}
+
+body {
+  font-family: "Lato";
+  font-weight: 300;
+  font-size: 14px;
+  color: #555;
+}
+
+th, td {
+	font-weight: bold;
+	letter-spacing: 0.1em;
+}
+td {
+	line-height: 2.5em;
+	font-size: 0.8em;
+	padding: 0 1em;
+	border: 1px solid #DDD;
+}
+th {
+	text-align: center;
+  cursor: pointer;
+  color: #333;
+  padding: 0.5em;
+	border: 1px solid #555;
+	background: rgba(153,204,255,0.99);
+}
+table {
+	width: 80%;
+}
+/* Sorting */
+table .asc:after {
+  padding-left: 1em;
+  content: '\25B2';
+  font-size: 0.5em;
+}
+table .dsc:after {
+  padding-left: 1em;
+  content: '\25BC';
+  font-size: 0.5em;
+}
+input[type=text] {
+	border-radius: 3px;
+	border: 1px solid #CCC;
+	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset;
+	height: 2em;
+}
+label {
+	font-size: 16px;
+	margin-right: 10px;
+}
+
+/* ----------- Example column class ---------- */
+.name-column {
+	color: steelblue;
+}
+
+/* ----------- Search Bar -------------------- */
+.search-container {
+	display: inline-block;
+	max-width: 300px;
+}
+
+/* -------- Paginator --------  */
+.btn[disabled] {
+	cursor: inherit;
+}
+.paginator {
+	display: inline-block;
+	float: right;
+}
+.paginator div {
+	display: inline-block;
+	margin-left: 10px;
+}
+.paginator input {
+	height: 2.5em;
+	width:  3em;
+	padding: 5px;
+}
+
+
+/* -------- Editor --------------- */
+.editor input {
+	height: 2.5em;
+	float: left;
+}
