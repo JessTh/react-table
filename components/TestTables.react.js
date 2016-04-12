@@ -2,7 +2,7 @@
  * @jsx React.DOM
  */
 
-/* 1: Just a table
+/* 1. Table
 *  requires:
 *   - data
 *  	- columns: function that returns an array of objects discribing each column.
@@ -17,7 +17,7 @@
 * 									The argument passed to the column-function can be used to
 * 									access ReactTable methods.
 *
-* NB: The data needs to contian unique IDs (name: id/ID) if the content should be editable.
+* NOTE: data need to contian unique id's if the content should be editable.
 */
 
 var TestTable1 = React.createClass({
@@ -53,13 +53,13 @@ function getColumns(that) {
 			header:	'Account',
 			sortable: true,
 			fun: function(val) {
-				// Random formatting
+				// Some formatting
 				return [val.slice(0,2), val.slice(2,10), val.slice(10), val.slice(val.length-4)].join('-');
 			}
 		},{
 			fun: function(val) {
-				// Random useless function
-				var handler = function() { alert('Id: '+ val.id) };
+				// E.g. useless function
+				var handler = function() { alert('row id: '+ val.id) };
 				return <a onClick={handler} style={{cursor: 'pointer'}}>ID</a>;
 			}
 		},{
@@ -76,6 +76,7 @@ function getColumns(that) {
 *  SearchBar reguire a handler that updates the state
 *  ReactTable requires a handler that updates the state
 */
+
 var TestTable2 = React.createClass({
 
 	getInitialState: function() {
@@ -114,6 +115,7 @@ var TestTable2 = React.createClass({
 * 	- page
 * 	- per_page
 */
+
 var TestTable3 = React.createClass({
 
 	getInitialState: function() {

@@ -7,7 +7,7 @@ var TestComponent = React.createClass({
   render: function() {
     return (
       <div style={{marginLeft: 30}}>
-        <h3>10 rows</h3>
+        <h3>10 rows - editable names</h3>
         <TestTable1 />
         <h3>10 rows - search</h3>
         <TestTable2 />

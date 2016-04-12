@@ -62,6 +62,12 @@ var ReactTable = React.createClass({
 		return { search: '' };
 	},
 
+	componentWillReceiveProps: function(nextProps) {
+    if (this.props.data != nextProps.data) {
+      this.setState({ data: nextProps.data });
+    }
+  },
+
 	render: function() {
 		var data 			= this.state.data,
 				sortOrder = this.state.sortOrder,
@@ -74,10 +80,15 @@ var ReactTable = React.createClass({
 				editor 		= this._onEdit;
 
 		if (search) {
-			data = _.filter(data, function(d) {
-				return contains(_.values(d), search.toLowerCase());
-			});
-		}
+      // Search only in fields that are visible
+      var search_cols = _.compact(columns.map(function(c, i) {
+        return c.property;
+      }));
+      data = _.filter(data, function(d) {
+        var ld = _.pick(d, search_cols)
+        return contains(_.values(ld), search.toLowerCase());
+      });
+    }
 
 		if (sortBy) {
 			data.sort(compare(sortBy, sortOrder));
@@ -87,9 +98,11 @@ var ReactTable = React.createClass({
 			data = data.slice((page-1)*per_page, page*per_page);
 		}
 
+		if (data.length === 0) return <table></table>;
+
 		return (
 				<table className={this.props.className} style={this.props.style}>
-					<thead>
+					<thead><tr>
 					{columns.map(function(c, i) {
 						var handler = c.sortable ? sorter : null;
 						var cl = c.property === sortBy
@@ -103,29 +116,28 @@ var ReactTable = React.createClass({
 							>{c.header}</th>
 						);
 					})}
-					</thead>
+					</tr></thead>
 					<tbody>
-						{data.map(function(val, i) {
-							var id = val.id ? val.id : (val.ID ? val.ID : i);				// use id column if provided
+						{data.map(function(d, i) {
+							var id = d.id ? d.id : i;				// use id column if provided
 							return (
-								<tr id = {i} key	= {'row-'+ i}>
+								<tr id = {id} key	= {'row-'+ i}>
 									{columns.map(function(c, j) {
 										var value = c.fun
-											? (c.property ? c.fun(val[c.property]) : c.fun(val) )
-											: val[c.property];
+											? (c.property ? c.fun(d[c.property]) : c.fun(d) )
+											: d[c.property];
 										var value = c.editable
 											? (<Editor
 													value 	= {value}
 													handler = {editor}
-													id 			= {id +'_'+c.property} /> )
+													id 			= {id +'__'+c.property || j} /> )
 											: value;
 										return (
 											<td
 												className 	= {c.classes}
 												key					= {'col-'+ j}
-												id  				= {id +'_'+c.property}
-											>{value}
-											</td>
+												id  				= {id +'__'+c.property || j}
+											>{value}</td>
 										);
 									})}
 								</tr>
@@ -138,23 +150,24 @@ var ReactTable = React.createClass({
 
 	_onDeleteRow: function(event) {
 		var newData = this.state.data,
-				id 			= event.target.parentNode.id.split('_')[0],
-				col  		= event.target.id.split('_')[1],
+				id 			= event.target.parentNode.id.split('__')[0],
 				index 	= getIndex(newData, 'id', parseInt(id, 10));
 
-		var res = window.confirm('Remove entry: ' + (newData[index].name || id) + '?');
+		var res = window.confirm('Delete entry: ' + (newData[index].name || id) + '?');
 		if (!res) return;
 		newData.splice(index,1);
 		this.setState({ data: newData });
 	},
 
-	_onEdit: function(event) {
+	_onEdit: function(target) {
 		var newData = this.state.data,
-				id 			= event.target.id.split('_')[0],
-				col  		= event.target.id.split('_')[1],
+				id 			= target.id.split('__')[0],
+				col  		= target.id.split('__')[1],
 				index 	= getIndex(newData, 'id', parseInt(id, 10));
-		newData[index][col] = event.target.value;
+
+		newData[index][col] = target.value;
 		this.setState({ data: newData });
+		if (this.props.editHandler) this.props.editHandler(newData[index]);
 	},
 
 	_onSort: function(event) {
@@ -186,12 +199,11 @@ var Paginator = React.createClass({
 		var onPage 		= this._onPage;
 		var page 			= parseInt(this.props.page, 10),
 				nrp 			= Math.ceil(this.props.data.length/this.props.per_page);
-
-		var pages = getPages(page, nrp);
+		var pages 		= getPages(page, nrp);
 
 		return (
 			<div className={'paginator '+ this.props.className}>
-				<div >
+				<div>
 					<label forHtml='pp'>Per page:</label>
 					<input
 						id						= 'pp'
@@ -276,9 +288,13 @@ var Editor = React.createClass({
 	},
 
 	componentWillReceiveProps(newProps) {
-		if (newProps.value != this.props.value) {						// e.g. changed sort order.
+		if (newProps.value !== this.state.edit_value) {
 			this.setState({ edit_value: newProps.value });
 		}
+	},
+
+	componentDidUpdate: function() {
+		if (this.refs.input) ReactDOM.findDOMNode(this.refs.input).focus();
 	},
 
 	render: function() {
@@ -286,18 +302,20 @@ var Editor = React.createClass({
 
 		return (
 			<div className='editor'>
-				{this.state.edit ? null :
-					<span
-						onClick			=	{this._onEdit}
+				{this.state.edit
+					? <input
+	            type 			= {'text'}
+	            value			= {this.state.edit_value}
+	            onChange 	= {this._onInput}
+	            onBlur		= {this._onSave}
+	            onKeyDown	= {this._onKeyDown}
+	            ref       = 'input'
+	            id  			= {this.props.id}
+	            style			= {{float: 'left'}}
+						/>
+					:	<span
+							onClick			=	{this._onEdit}
 						>{this.props.value}</span>}
-				<input
-					type 				= {type}
-					value				= {this.state.edit_value}
-					onChange 		= {this._onInput}
-					onBlur			= {this._onSave}
-					onKeyDown		= {this._onKeyDown}
-					id  				= {this.props.id}
-					autoFocus />
 			</div>
 		);
 	},
@@ -311,7 +329,7 @@ var Editor = React.createClass({
 
 	_onSave: function(event) {
 		this.setState({ edit: false });
-		this.props.handler(event);
+		this.props.handler(event.target);
 	},
 
 	_onInput: function(event) {
@@ -330,29 +348,33 @@ var Editor = React.createClass({
 
 /* for sorting. compare in asc./desc. order */
 function compare(col, order) {
-	return function(a, b) {
+	if (typeof a[col] == 'string') {
 		if (a[col].toLowerCase() < b[col].toLowerCase()) return -1 * order;
 		if (a[col].toLowerCase() > b[col].toLowerCase()) return  1 * order;
+		return 0;
+	} else {
+		if (a[col] < b[col]) return -1 * order;
+		if (a[col] > b[col]) return  1 * order;
 		return 0;
 	}
 }
 
 /* look for substring in strings in data row (objects searched recursively)*/
 function contains(array, substr) {
-	for (a in array) {
-		if (typeof array[a] === 'string') {
-			if (array[a].toLowerCase().indexOf(substr) > -1) return true;
-		} else if (typeof array[a] === 'object') {
-			if (contains(array[a], substr)) return true;
-		}
-	}
-	return false;
+  for (a in array) {
+    if (typeof array[a] === 'string') {
+      if (array[a].toLowerCase().indexOf(substr) > -1) return true;
+    } else if (typeof array[a] === 'object') {
+      if (contains(array[a], substr)) return true;
+    }
+  }
+  return false;
 }
 
 /* get data row index by specified column value */
 function getIndex(data, col, val) {
-	// return data.indexOf(_.matches(data, {id: id}));
 	var index = -1;
+	if (typeof data[0][col].id === 'number') val = parseInt(val, 10);
 	data.forEach(function(d, i) {
 		if (d[col] === val) {
 			index = i;
