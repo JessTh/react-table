@@ -3,11 +3,10 @@
  */
 
 
-
 /* SearchBar
 * -------------
 *  Properties:
-*  - handler 		: function to pass any entered search term to
+*  - handler  : function to pass any entered search term to
 */
 
 
@@ -34,17 +33,17 @@ var SearchBar = React.createClass({
 /* ReactTable
 * ---------------
 *  Properties:
-*  - data 			: table data (json)
-*  - columns  	:  function that returns a discription for each data column
+*  - data       : table data (json)
+*  - columns    :  function that returns a discription for each data column
 *  - searchTerm : if a search bar is added, term to filter on (optional)
-* 								will search in all columns.
+*                 will search in all columns.
 *  Column options:
-*  - property 	: name of the data property (optional)
-*  - header 		: table header name (optional)
-*  - sortable 	: true (optional)
-*  - editable 	: true (optional)
-*  - fun 				: function to transform data (optional)
-*  - classes 		: string, additional column css-classes (optional)
+*  - property   : name of the data property (optional)
+*  - header     : table header name (optional)
+*  - sortable   : true (optional)
+*  - editable   : true (optional)
+*  - fun        : function to transform data (optional)
+*  - classes    : string, additional column css-classes (optional)
 */
 
 var ReactTable = React.createClass({
@@ -185,11 +184,11 @@ var ReactTable = React.createClass({
 * ------------
 * Contains items per page selector (input text field) and page selector (button group).
 * Properties:
-*  - page				: current page shown
-*  - per_page		: current nr of items per page
-*  - onPage			: parent method to update value: current page shown
-*  - onPerPage 	: parent method to update value: items per page
-*  - className	: additional div classes (optional)
+*  - page       : current page shown
+*  - per_page   : current nr of items per page
+*  - onPage     : parent method to update value: current page shown
+*  - onPerPage  : parent method to update value: items per page
+*  - className  : additional div classes (optional)
 * State: N/A
 */
 
@@ -270,11 +269,11 @@ function getPages(page, nrp) {
 * Show/hide edit text field in cell.
 * Saves edited value on blur or enter key press.
 *  Properties:
-*  - value 			: value to display in table cell
-*  - id					: component id (from parent), pass on to parent to save edited values
-*  - handler  	: parent function to handle save events
+*  - value      : value to display in table cell
+*  - id         : component id (from parent), pass on to parent to save edited values
+*  - handler    : parent function to handle save events
 * State:
-*  - edit				: boolean, is component in edit mode? show/hide edit text field
+*  - edit       : boolean, is component in edit mode? show/hide edit text field
 *  - edit_value : string, current value in edit text field
 */
 

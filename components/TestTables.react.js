@@ -7,15 +7,15 @@
 *   - data
 *  	- columns: function that returns an array of objects discribing each column.
 * 		Can specify:
-* 		- property 	: (string) name in data entry to use.
-* 		- header		: (string) column header name
-* 		- sortable 	: (boolean) can user sort on column?
-* 		- editable 	: (boolean) should the content be editable?
-* 		- classes 	: (string) custom CSS classes for the column
-* 		- fun 			: (function) any function. can e.g. be a function to format the
-* 									values or a call to the ReactTable's _onDeleteRow function.
-* 									The argument passed to the column-function can be used to
-* 									access ReactTable methods.
+* 		- property  : (string) name in data entry to use.
+* 		- header    : (string) column header name
+* 		- sortable  : (boolean) can user sort on column?
+* 		- editable  : (boolean) should the content be editable?
+* 		- classes   : (string) custom CSS classes for the column
+* 		- fun       : (function) any function. can e.g. be a function to format the
+*                   values or a call to the ReactTable's _onDeleteRow function.
+*                   The argument passed to the column-function can be used to
+*                   access ReactTable methods.
 *
 * NOTE: data need to contian unique id's if the content should be editable.
 */
@@ -104,11 +104,11 @@ var TestTable2 = React.createClass({
 
 /* 3. Table with search bar and paginator
 * Paginator requires properties:
-* 	- page			:	(int) current page selected
-* 	- onPage		: (function) handler for updating page
-* 	- per_page	: (int) number of rows shown on each page
-* 	- onPerPage	: (function) handler for updating per_page
-* 	- data			: table data
+* 	- page       :	(int) current page selected
+* 	- onPage     : (function) handler for updating page
+* 	- per_page   : (int) number of rows shown on each page
+* 	- onPerPage  : (function) handler for updating per_page
+* 	- data       : table data
 * ReactTable requires additional properties:
 * 	- page
 * 	- per_page
