@@ -13,20 +13,20 @@
 
 var SearchBar = React.createClass({
 
-	render: function() {
-		return (
-			<div className='search-container' style={this.props.style} >
-				<label>Search:</label>
-				<input
-					onChange	= {this._onSearch}
-					type			= 'text' />
-			</div>
-		);
-	},
+  render: function() {
+    return (
+      <div className='search-container' style={this.props.style} >
+        <label>Search:</label>
+        <input
+          onChange	= {this._onSearch}
+          type			= 'text' />
+      </div>
+    );
+  },
 
-	_onSearch: function(event) {
-		this.props.handler(event.target.value);
-	}
+  _onSearch: function(event) {
+    this.props.handler(event.target.value);
+  }
 
 });
 
@@ -49,37 +49,37 @@ var SearchBar = React.createClass({
 
 var ReactTable = React.createClass({
 
-	getInitialState: function() {
-		return {
-			data: this.props.data,
-			columns: this.props.columns(this),
-			sortBy: '',
-			sortOrder: -1
-		};
-	},
+  getInitialState: function() {
+    return {
+      data: this.props.data,
+      columns: this.props.columns(this),
+      sortBy: '',
+      sortOrder: -1
+    };
+  },
 
-	getDefaultProps: function() {
-		return { search: '' };
-	},
+  getDefaultProps: function() {
+    return { search: '' };
+  },
 
-	componentWillReceiveProps: function(nextProps) {
+  componentWillReceiveProps: function(nextProps) {
     if (this.props.data != nextProps.data) {
       this.setState({ data: nextProps.data });
     }
   },
 
-	render: function() {
-		var data 			= this.state.data,
-				sortOrder = this.state.sortOrder,
-				sortBy 		= this.state.sortBy,
-				columns		= this.state.columns,
-				search		= this.props.searchTerm,
-				page			= this.props.page,
-				per_page	= this.props.per_page;
-		var sorter 		= this._onSort,
-				editor 		= this._onEdit;
+  render: function() {
+    var data 			= this.state.data,
+        sortOrder = this.state.sortOrder,
+        sortBy 		= this.state.sortBy,
+        columns		= this.state.columns,
+        search		= this.props.searchTerm,
+        page			= this.props.page,
+        per_page	= this.props.per_page;
+    var sorter 		= this._onSort,
+        editor 		= this._onEdit;
 
-		if (search) {
+  if (search) {
       // Search only in fields that are visible
       var search_cols = _.compact(columns.map(function(c, i) {
         return c.property;
@@ -90,93 +90,93 @@ var ReactTable = React.createClass({
       });
     }
 
-		if (sortBy) {
-			data.sort(compare(sortBy, sortOrder));
-		}
+  if (sortBy) {
+    data.sort(compare(sortBy, sortOrder));
+  }
 
-		if (page) {
-			data = data.slice((page-1)*per_page, page*per_page);
-		}
+  if (page) {
+    data = data.slice((page-1)*per_page, page*per_page);
+  }
 
-		if (data.length === 0) return <table></table>;
+  if (data.length === 0) return <table></table>;
 
-		return (
-				<table className={this.props.className} style={this.props.style}>
-					<thead><tr>
-					{columns.map(function(c, i) {
-						var handler = c.sortable ? sorter : null;
-						var cl = c.property === sortBy
-							? (sortOrder === 1 ? 'asc' : 'dsc')
-							: null;
-						return (
-							<th id 			= {c.property}
-								className = {cl}
-								onClick		= {handler}
-								key				= {'header-'+ i}
-							>{c.header}</th>
-						);
-					})}
-					</tr></thead>
-					<tbody>
-						{data.map(function(d, i) {
-							var id = d.id ? d.id : i;				// use id column if provided
-							return (
-								<tr id = {id} key	= {'row-'+ i}>
-									{columns.map(function(c, j) {
-										var value = c.fun
-											? (c.property ? c.fun(d[c.property]) : c.fun(d) )
-											: d[c.property];
-										var value = c.editable
-											? (<Editor
-													value 	= {value}
-													handler = {editor}
-													id 			= {id +'__'+c.property || j} /> )
-											: value;
-										return (
-											<td
-												className 	= {c.classes}
-												key					= {'col-'+ j}
-												id  				= {id +'__'+c.property || j}
-											>{value}</td>
-										);
-									})}
-								</tr>
-							);
-						})}
-					</tbody>
-				</table>
-		);
-	},
+  return (
+    <table className={this.props.className} style={this.props.style}>
+      <thead><tr>
+        {columns.map(function(c, i) {
+        var handler = c.sortable ? sorter : null;
+        var cl = c.property === sortBy
+        ? (sortOrder === 1 ? 'asc' : 'dsc')
+        : null;
+        return (
+        <th id 			= {c.property}
+        className = {cl}
+        onClick		= {handler}
+        key				= {'header-'+ i}
+        >{c.header}</th>
+        );
+        })}
+      </tr></thead>
+      <tbody>
+        {data.map(function(d, i) {
+          var id = d.id ? d.id : i;				// use id column if provided
+          return (
+            <tr id = {id} key	= {'row-'+ i}>
+              {columns.map(function(c, j) {
+                var value = c.fun
+                  ? (c.property ? c.fun(d[c.property]) : c.fun(d) )
+                  : d[c.property];
+                var value = c.editable
+                  ? (<Editor
+                        value 	= {value}
+                        handler = {editor}
+                        id 			= {id +'__'+c.property || j} /> )
+                  : value;
+                return (
+                  <td
+                    className 	= {c.classes}
+                    key					= {'col-'+ j}
+                    id  				= {id +'__'+c.property || j}
+                  >{value}</td>
+                );
+              })}
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+    );
+  },
 
-	_onDeleteRow: function(event) {
-		var newData = this.state.data,
-				id 			= event.target.parentNode.id.split('__')[0],
-				index 	= getIndex(newData, 'id', parseInt(id, 10));
+  _onDeleteRow: function(event) {
+    var newData = this.state.data,
+        id 			= event.target.parentNode.id.split('__')[0],
+        index 	= getIndex(newData, 'id', parseInt(id, 10));
 
-		var res = window.confirm('Delete entry: ' + (newData[index].name || id) + '?');
-		if (!res) return;
-		newData.splice(index,1);
-		this.setState({ data: newData });
-	},
+    var res = window.confirm('Delete entry: ' + (newData[index].name || id) + '?');
+    if (!res) return;
+    newData.splice(index,1);
+    this.setState({ data: newData });
+  },
 
-	_onEdit: function(target) {
-		var newData = this.state.data,
-				id 			= target.id.split('__')[0],
-				col  		= target.id.split('__')[1],
-				index 	= getIndex(newData, 'id', parseInt(id, 10));
+  _onEdit: function(target) {
+    var newData = this.state.data,
+        id 			= target.id.split('__')[0],
+        col  		= target.id.split('__')[1],
+        index 	= getIndex(newData, 'id', parseInt(id, 10));
 
-		newData[index][col] = target.value;
-		this.setState({ data: newData });
-		if (this.props.editHandler) this.props.editHandler(newData[index]);
-	},
+    newData[index][col] = target.value;
+    this.setState({ data: newData });
+    if (this.props.editHandler) this.props.editHandler(newData[index]);
+  },
 
-	_onSort: function(event) {
-		var newOrder = this.state.sortOrder * -1;
-		this.setState({
-			sortBy: event.target.id,
-			sortOrder: newOrder
-		});
-	}
+  _onSort: function(event) {
+    var newOrder = this.state.sortOrder * -1;
+    this.setState({
+      sortBy: event.target.id,
+      sortOrder: newOrder
+    });
+  }
 
 });
 
@@ -195,73 +195,73 @@ var ReactTable = React.createClass({
 
 var Paginator = React.createClass({
 
-	render: function() {
-		var onPage 		= this._onPage;
-		var page 			= parseInt(this.props.page, 10),
-				nrp 			= Math.ceil(this.props.data.length/this.props.per_page);
-		var pages 		= getPages(page, nrp);
+  render: function() {
+    var onPage 		= this._onPage;
+    var page 			= parseInt(this.props.page, 10),
+        nrp 			= Math.ceil(this.props.data.length/this.props.per_page);
+    var pages 		= getPages(page, nrp);
 
-		return (
-			<div className={'paginator '+ this.props.className}>
-				<div>
-					<label forHtml='pp'>Per page:</label>
-					<input
-						id						= 'pp'
-						type					= 'text'
-						onChange			= {this._onPerPage}
-						defaultValue	= {this.props.per_page} />
-				</div>
-				<div className = {'btn-group'} >
-					{pages.map(function(p, i) {
-						var bgCol = page === p ? '#CCC' : '#FFF';
-						return(
-							<button
-								disabled	= {p === '...' ? true : false}
-								key				= {i}
-								id				= {p}
-								onClick		= {onPage}
-								className = 'btn btn-default'
-								style 		= {{backgroundColor: bgCol}}
-							>{p}</button>);
-					})}
-				</div>
-			</div>
-		);
-	},
+    return (
+      <div className={'paginator '+ this.props.className}>
+        <div>
+          <label forHtml='pp'>Per page:</label>
+          <input
+            id						= 'pp'
+            type					= 'text'
+            onChange			= {this._onPerPage}
+            defaultValue	= {this.props.per_page} />
+        </div>
+        <div className = {'btn-group'} >
+          {pages.map(function(p, i) {
+            var bgCol = page === p ? '#CCC' : '#FFF';
+            return(
+            <button
+              disabled	= {p === '...' ? true : false}
+              key				= {i}
+              id				= {p}
+              onClick		= {onPage}
+              className = 'btn btn-default'
+              style 		= {{backgroundColor: bgCol}}
+            >{p}</button>);
+          })}
+        </div>
+      </div>
+    );
+  },
 
-	_onPerPage: function(event) {
-		var pp = parseInt(event.target.value, 10)
-		if ( pp > 9) {																// avoid update if < 10 per page.
-			this.props.onPage(1); 											// reset to 1 to avoid current page > nr.of pages
-			this.props.onPerPage(event.target.value);
-		}
-	},
+  _onPerPage: function(event) {
+    var pp = parseInt(event.target.value, 10)
+    if ( pp > 9) {																// avoid update if < 10 per page.
+      this.props.onPage(1); 											// reset to 1 to avoid current page > nr.of pages
+      this.props.onPerPage(event.target.value);
+    }
+  },
 
-	_onPage: function(event) {
-		this.props.onPage(event.target.id);
-	}
+  _onPage: function(event) {
+    this.props.onPage(event.target.id);
+  }
 
 });
 
 
 function getPages(page, nrp) {
-	var pages = [];
-	if (nrp > 6) {
-		if (page < 4) {
-			var a = new Array(page+1).fill(0).map(function(p, i) { return i+1; });
-			pages = a;
-			pages.push('...', nrp-1, nrp);
-		} else if (page > 3 && page < nrp-2) {
-			pages.push(1,'...',page-1, page, page+1,'...', nrp);
-		} else {
-			pages.push(1,2, '...');
-			var a = new Array(nrp-page+2).fill(0).map(function(p, i) { return page+i-1; });
-			pages = pages.concat(a);
-		}
-	} else {
-		pages = new Array(nrp).fill(0).map(function(p, i) { return i+1; });
-	}
-	return pages;
+  var pages = [];
+  if (nrp > 6) {
+    if (page < 4) {
+      var a = new Array(page+1).fill(0).map(function(p, i) { return i+1; });
+      pages = a;
+      pages.push('...', nrp-1, nrp);
+    } else if (page > 3 && page < nrp-2) {
+      pages.push(1,'...',page-1, page, page+1,'...', nrp);
+    } else {
+      pages.push(1,2, '...');
+      var a = new Array(nrp-page+2).fill(0).map(function(p, i) { return page+i-1; });
+      pages = pages.concat(a);
+    }
+  } else {
+    pages = new Array(nrp).fill(0).map(function(p, i) { return i+1; });
+  }
+  return pages;
 }
 
 
@@ -280,65 +280,65 @@ function getPages(page, nrp) {
 
 var Editor = React.createClass({
 
-	getInitialState() {
-		return {
-			edit: false,
-			edit_value: this.props.value
-		};
-	},
+  getInitialState() {
+    return {
+      edit      : false,
+      edit_value: this.props.value
+    };
+  },
 
-	componentWillReceiveProps(newProps) {
-		if (newProps.value !== this.state.edit_value) {
-			this.setState({ edit_value: newProps.value });
-		}
-	},
+  componentWillReceiveProps(newProps) {
+    if (newProps.value !== this.state.edit_value) {
+      this.setState({ edit_value: newProps.value });
+    }
+  },
 
-	componentDidUpdate: function() {
-		if (this.refs.input) ReactDOM.findDOMNode(this.refs.input).focus();
-	},
+  componentDidUpdate: function() {
+    if (this.refs.input) ReactDOM.findDOMNode(this.refs.input).focus();
+  },
 
-	render: function() {
-		var type 				= this.state.edit ? 'text' : 'hidden';
+  render: function() {
+    var type 				= this.state.edit ? 'text' : 'hidden';
 
-		return (
-			<div className='editor'>
-				{this.state.edit
-					? <input
-	            type 			= {'text'}
-	            value			= {this.state.edit_value}
-	            onChange 	= {this._onInput}
-	            onBlur		= {this._onSave}
-	            onKeyDown	= {this._onKeyDown}
-	            ref       = 'input'
-	            id  			= {this.props.id}
-	            style			= {{float: 'left'}}
-						/>
-					:	<span
-							onClick			=	{this._onEdit}
-						>{this.props.value}</span>}
-			</div>
-		);
-	},
+    return (
+      <div className='editor'>
+        {this.state.edit
+          ? <input
+              type 			= {'text'}
+              value			= {this.state.edit_value}
+              onChange 	= {this._onInput}
+              onBlur		= {this._onSave}
+              onKeyDown	= {this._onKeyDown}
+              ref       = 'input'
+              id  			= {this.props.id}
+              style			= {{float: 'left'}}
+          />
+          :	<span
+              onClick			=	{this._onEdit}
+            >{this.props.value}</span>}
+      </div>
+    );
+  },
 
-	_onKeyDown: function(event) {
-		if (event.keyCode === 13) {
-			this._onSave(event);
-		}
-		event.stopPropagation();
-	},
+  _onKeyDown: function(event) {
+    if (event.keyCode === 13) {
+      this._onSave(event);
+    }
+    event.stopPropagation();
+  },
 
-	_onSave: function(event) {
-		this.setState({ edit: false });
-		this.props.handler(event.target);
-	},
+  _onSave: function(event) {
+    this.setState({ edit: false });
+    this.props.handler(event.target);
+  },
 
-	_onInput: function(event) {
-		this.setState({ edit_value: event.target.value });
-	},
+  _onInput: function(event) {
+    this.setState({ edit_value: event.target.value });
+  },
 
-	_onEdit: function(event) {
-		this.setState({ edit: true });
-	}
+  _onEdit: function(event) {
+    this.setState({ edit: true });
+  }
 
 });
 
@@ -348,15 +348,15 @@ var Editor = React.createClass({
 
 /* for sorting. compare in asc./desc. order */
 function compare(col, order) {
-	if (typeof a[col] == 'string') {
-		if (a[col].toLowerCase() < b[col].toLowerCase()) return -1 * order;
-		if (a[col].toLowerCase() > b[col].toLowerCase()) return  1 * order;
-		return 0;
-	} else {
-		if (a[col] < b[col]) return -1 * order;
-		if (a[col] > b[col]) return  1 * order;
-		return 0;
-	}
+  if (typeof a[col] == 'string') {
+    if (a[col].toLowerCase() < b[col].toLowerCase()) return -1 * order;
+    if (a[col].toLowerCase() > b[col].toLowerCase()) return  1 * order;
+    return 0;
+  } else {
+    if (a[col] < b[col]) return -1 * order;
+    if (a[col] > b[col]) return  1 * order;
+    return 0;
+  }
 }
 
 /* look for substring in strings in data row (objects searched recursively)*/
@@ -373,13 +373,13 @@ function contains(array, substr) {
 
 /* get data row index by specified column value */
 function getIndex(data, col, val) {
-	var index = -1;
-	if (typeof data[0][col].id === 'number') val = parseInt(val, 10);
-	data.forEach(function(d, i) {
-		if (d[col] === val) {
-			index = i;
-			return true;
-		}
-	});
-	return index;
+  var index = -1;
+  if (typeof data[0][col].id === 'number') val = parseInt(val, 10);
+    data.forEach(function(d, i) {
+      if (d[col] === val) {
+        index = i;
+        return true;
+      }
+    });
+  return index;
 }
