@@ -18,8 +18,8 @@ var SearchBar = React.createClass({
       <div className='search-container' style={this.props.style} >
         <label>Search:</label>
         <input
-          onChange	= {this._onSearch}
-          type			= 'text' />
+          onChange  = {this._onSearch}
+          type      = 'text' />
       </div>
     );
   },
@@ -51,10 +51,10 @@ var ReactTable = React.createClass({
 
   getInitialState: function() {
     return {
-      data: this.props.data,
-      columns: this.props.columns(this),
-      sortBy: '',
-      sortOrder: -1
+      data      : this.props.data,
+      columns   : this.props.columns(this),
+      sortBy    : '',
+      sortOrder : -1
     };
   },
 
@@ -69,15 +69,15 @@ var ReactTable = React.createClass({
   },
 
   render: function() {
-    var data 			= this.state.data,
+    var data      = this.state.data,
         sortOrder = this.state.sortOrder,
-        sortBy 		= this.state.sortBy,
-        columns		= this.state.columns,
-        search		= this.props.searchTerm,
-        page			= this.props.page,
-        per_page	= this.props.per_page;
-    var sorter 		= this._onSort,
-        editor 		= this._onEdit;
+        sortBy    = this.state.sortBy,
+        columns   = this.state.columns,
+        search    = this.props.searchTerm,
+        page      = this.props.page,
+        per_page  = this.props.per_page;
+    var sorter    = this._onSort,
+        editor    = this._onEdit;
 
   if (search) {
       // Search only in fields that are visible
@@ -104,17 +104,17 @@ var ReactTable = React.createClass({
     <table className={this.props.className} style={this.props.style}>
       <thead><tr>
         {columns.map(function(c, i) {
-        var handler = c.sortable ? sorter : null;
-        var cl = c.property === sortBy
-        ? (sortOrder === 1 ? 'asc' : 'dsc')
-        : null;
-        return (
-        <th id 			= {c.property}
-        className = {cl}
-        onClick		= {handler}
-        key				= {'header-'+ i}
-        >{c.header}</th>
-        );
+          var handler = c.sortable ? sorter : null;
+          var cl      = c.property === sortBy
+          ? (sortOrder === 1 ? 'asc' : 'dsc')
+          : null;
+          return (
+            <th id      = {c.property}
+              className = {cl}
+              onClick   = {handler}
+              key       = {'header-'+ i}
+            >{c.header}</th>
+          );
         })}
       </tr></thead>
       <tbody>
@@ -128,15 +128,15 @@ var ReactTable = React.createClass({
                   : d[c.property];
                 var value = c.editable
                   ? (<Editor
-                        value 	= {value}
+                        value   = {value}
                         handler = {editor}
-                        id 			= {id +'__'+c.property || j} /> )
+                        id      = {id +'__'+c.property || j} /> )
                   : value;
                 return (
                   <td
-                    className 	= {c.classes}
-                    key					= {'col-'+ j}
-                    id  				= {id +'__'+c.property || j}
+                    className   = {c.classes}
+                    key         = {'col-'+ j}
+                    id          = {id +'__'+c.property || j}
                   >{value}</td>
                 );
               })}
@@ -150,8 +150,8 @@ var ReactTable = React.createClass({
 
   _onDeleteRow: function(event) {
     var newData = this.state.data,
-        id 			= event.target.parentNode.id.split('__')[0],
-        index 	= getIndex(newData, 'id', parseInt(id, 10));
+        id      = event.target.parentNode.id.split('__')[0],
+        index   = getIndex(newData, 'id', parseInt(id, 10));
 
     var res = window.confirm('Delete entry: ' + (newData[index].name || id) + '?');
     if (!res) return;
@@ -161,9 +161,9 @@ var ReactTable = React.createClass({
 
   _onEdit: function(target) {
     var newData = this.state.data,
-        id 			= target.id.split('__')[0],
-        col  		= target.id.split('__')[1],
-        index 	= getIndex(newData, 'id', parseInt(id, 10));
+        id      = target.id.split('__')[0],
+        col     = target.id.split('__')[1],
+        index   = getIndex(newData, 'id', parseInt(id, 10));
 
     newData[index][col] = target.value;
     this.setState({ data: newData });
@@ -173,8 +173,8 @@ var ReactTable = React.createClass({
   _onSort: function(event) {
     var newOrder = this.state.sortOrder * -1;
     this.setState({
-      sortBy: event.target.id,
-      sortOrder: newOrder
+      sortBy    : event.target.id,
+      sortOrder : newOrder
     });
   }
 
@@ -196,32 +196,32 @@ var ReactTable = React.createClass({
 var Paginator = React.createClass({
 
   render: function() {
-    var onPage 		= this._onPage;
-    var page 			= parseInt(this.props.page, 10),
-        nrp 			= Math.ceil(this.props.data.length/this.props.per_page);
-    var pages 		= getPages(page, nrp);
+    var onPage  = this._onPage;
+    var page    = parseInt(this.props.page, 10),
+        nrp     = Math.ceil(this.props.data.length/this.props.per_page);
+    var pages   = getPages(page, nrp);
 
     return (
       <div className={'paginator '+ this.props.className}>
         <div>
           <label forHtml='pp'>Per page:</label>
           <input
-            id						= 'pp'
-            type					= 'text'
-            onChange			= {this._onPerPage}
-            defaultValue	= {this.props.per_page} />
+            id            = 'pp'
+            type          = 'text'
+            onChange      = {this._onPerPage}
+            defaultValue  = {this.props.per_page} />
         </div>
         <div className = {'btn-group'} >
           {pages.map(function(p, i) {
             var bgCol = page === p ? '#CCC' : '#FFF';
             return(
             <button
-              disabled	= {p === '...' ? true : false}
-              key				= {i}
-              id				= {p}
-              onClick		= {onPage}
+              disabled  = {p === '...' ? true : false}
+              key       = {i}
+              id        = {p}
+              onClick   = {onPage}
               className = 'btn btn-default'
-              style 		= {{backgroundColor: bgCol}}
+              style     = {{backgroundColor: bgCol}}
             >{p}</button>);
           })}
         </div>
@@ -298,23 +298,23 @@ var Editor = React.createClass({
   },
 
   render: function() {
-    var type 				= this.state.edit ? 'text' : 'hidden';
+    var type = this.state.edit ? 'text' : 'hidden';
 
     return (
       <div className='editor'>
         {this.state.edit
           ? <input
-              type 			= {'text'}
-              value			= {this.state.edit_value}
-              onChange 	= {this._onInput}
-              onBlur		= {this._onSave}
-              onKeyDown	= {this._onKeyDown}
+              type      = {'text'}
+              value     = {this.state.edit_value}
+              onChange  = {this._onInput}
+              onBlur    = {this._onSave}
+              onKeyDown = {this._onKeyDown}
               ref       = 'input'
-              id  			= {this.props.id}
-              style			= {{float: 'left'}}
+              id        = {this.props.id}
+              style     = {{float: 'left'}}
           />
           :	<span
-              onClick			=	{this._onEdit}
+              onClick   =	{this._onEdit}
             >{this.props.value}</span>}
       </div>
     );
